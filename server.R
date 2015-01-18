@@ -91,7 +91,7 @@ shinyServer(function(input, output) {
       predBOSTON <- round(predict(BOSTON.lm, new.BOSTON),2)
       return(predBOSTON)
     }
-    })
+  })
   
   
   LowerCI <- reactive({
@@ -162,7 +162,7 @@ shinyServer(function(input, output) {
       return(predBOSTON[2])
     }
   })
-
+  
   UpperCI <- reactive({
     if (input$Test == "MMSE") {
       new.MMSE <- data.frame(MMSE.1 = input$T1Score, AGE.1 = input$BAge, EDUC = input$Edu, Interval1 = input$Interval, CAUC = factor(input$Race), SEX = factor(input$Sex))
@@ -231,124 +231,291 @@ shinyServer(function(input, output) {
       return(predBOSTON[3])
     }
   })
-
+  
   BaseRate <- reactive({
+    change <- readRDS("change.RDS")
     if (input$Test == "MMSE") {
-      MMSE.br <- readRDS("MMSEChg.RDS")
-      change <- input$T2Score - input$T1Score
-      return(MMSE.br$CumFreq[MMSE.br$ChgScore == change])
+      chg <- change$MMSE[order(change$MMSE)]
+      chg <- cumsum(table(chg))
+      chg <- data.frame(change = as.numeric(names(chg)), freq = chg)
+      chg <- rbind(chg, data.frame(change = c(min(chg$change):max(chg$change))[!(min(chg$change):max(chg$change) %in% chg$change)], 
+                                   freq = rep(0, length(c(min(chg$change):max(chg$change))[!(min(chg$change):max(chg$change) %in% chg$change)]))))
+      chg <- chg[order(chg$change),]
+      chg$freq <- cummax(chg$freq)
+      chg$br <- chg$freq/max(chg$freq)
+      return(chg$br[chg$change == (input$T2Score - input$T1Score)])
     }
     if (input$Test == "DSF") {
-      DIGIF.br <- readRDS("DIGIFChg.RDS")
-      change <- input$T2Score - input$T1Score
-      return(DIGIF.br$CumFreq[DIGIF.br$ChgScore == change])
+      chg <- change$DIGIF[order(change$DIGIF)]
+      chg <- cumsum(table(chg))
+      chg <- data.frame(change = as.numeric(names(chg)), freq = chg)
+      chg <- rbind(chg, data.frame(change = c(min(chg$change):max(chg$change))[!(min(chg$change):max(chg$change) %in% chg$change)], 
+                                   freq = rep(0, length(c(min(chg$change):max(chg$change))[!(min(chg$change):max(chg$change) %in% chg$change)]))))
+      chg <- chg[order(chg$change),]
+      chg$freq <- cummax(chg$freq)
+      chg$br <- chg$freq/max(chg$freq)
+      return(chg$br[chg$change == (input$T2Score - input$T1Score)])
     }
     if (input$Test == "DSB") {
-      DIGIB.br <- readRDS("DIGIBChg.RDS")
-      change <- input$T2Score - input$T1Score
-      return(DIGIB.br$CumFreq[DIGIB.br$ChgScore == change])
+      chg <- change$DIGIB[order(change$DIGIB)]
+      chg <- cumsum(table(chg))
+      chg <- data.frame(change = as.numeric(names(chg)), freq = chg)
+      chg <- rbind(chg, data.frame(change = c(min(chg$change):max(chg$change))[!(min(chg$change):max(chg$change) %in% chg$change)], 
+                                   freq = rep(0, length(c(min(chg$change):max(chg$change))[!(min(chg$change):max(chg$change) %in% chg$change)]))))
+      chg <- chg[order(chg$change),]
+      chg$freq <- cummax(chg$freq)
+      chg$br <- chg$freq/max(chg$freq)
+      return(chg$br[chg$change == (input$T2Score - input$T1Score)])
+      
     }
     if (input$Test == "DSC") {
-      WAIS.br <- readRDS("WAISChg.RDS")
-      change <- input$T2Score - input$T1Score
-      return(WAIS.br$CumFreq[WAIS.br$ChgScore == change])
+      chg <- change$DSym[order(change$DSym)]
+      chg <- cumsum(table(chg))
+      chg <- data.frame(change = as.numeric(names(chg)), freq = chg)
+      chg <- rbind(chg, data.frame(change = c(min(chg$change):max(chg$change))[!(min(chg$change):max(chg$change) %in% chg$change)], 
+                                   freq = rep(0, length(c(min(chg$change):max(chg$change))[!(min(chg$change):max(chg$change) %in% chg$change)]))))
+      chg <- chg[order(chg$change),]
+      chg$freq <- cummax(chg$freq)
+      chg$br <- chg$freq/max(chg$freq)
+      return(chg$br[chg$change == (input$T2Score - input$T1Score)])
+      
     }
     if (input$Test == "TMTA") {
-      TRAILA.br <- readRDS("TRAILAChg.RDS")
-      change <- input$T2Score - input$T1Score
-      return(TRAILA.br$CumFreq[TRAILA.br$ChgScore == change])
+      chg <- change$TrailsA[order(change$TrailsA)]
+      chg <- -chg
+      chg <- cumsum(table(chg))
+      chg <- data.frame(change = as.numeric(names(chg)), freq = chg)
+      chg <- rbind(chg, data.frame(change = c(min(chg$change):max(chg$change))[!(min(chg$change):max(chg$change) %in% chg$change)], 
+                                   freq = rep(0, length(c(min(chg$change):max(chg$change))[!(min(chg$change):max(chg$change) %in% chg$change)]))))
+      chg <- chg[order(chg$change),]
+      chg$freq <- cummax(chg$freq)
+      chg$br <- chg$freq/max(chg$freq)
+      chg$change <- -chg$change
+      return(chg$br[chg$change == (input$T2Score - input$T1Score)])
+      
     }
     if (input$Test == "TMTB") {
-      TRAILB.br <- readRDS("TRAILBChg.RDS")
-      change <- input$T2Score - input$T1Score
-      return(TRAILB.br$CumFreq[TRAILB.br$ChgScore == change])
+      chg <- change$TrailsB[order(change$TrailsB)]
+      chg <- -chg
+      chg <- cumsum(table(chg))
+      chg <- data.frame(change = as.numeric(names(chg)), freq = chg)
+      chg <- rbind(chg, data.frame(change = c(min(chg$change):max(chg$change))[!(min(chg$change):max(chg$change) %in% chg$change)], 
+                                   freq = rep(0, length(c(min(chg$change):max(chg$change))[!(min(chg$change):max(chg$change) %in% chg$change)]))))
+      chg <- chg[order(chg$change),]
+      chg$freq <- cummax(chg$freq)
+      chg$br <- chg$freq/max(chg$freq)
+      chg$change <- -chg$change
+      return(chg$br[chg$change == (input$T2Score - input$T1Score)])
+      
     }
     if (input$Test == "LMI") {
-      LOGIMEM.br <- readRDS("LOGIMEMChg.RDS")
-      change <- input$T2Score - input$T1Score
-      return(LOGIMEM.br$CumFreq[LOGIMEM.br$ChgScore == change])
+      chg <- change$LMI[order(change$LMI)]
+      chg <- cumsum(table(chg))
+      chg <- data.frame(change = as.numeric(names(chg)), freq = chg)
+      chg <- rbind(chg, data.frame(change = c(min(chg$change):max(chg$change))[!(min(chg$change):max(chg$change) %in% chg$change)], 
+                                   freq = rep(0, length(c(min(chg$change):max(chg$change))[!(min(chg$change):max(chg$change) %in% chg$change)]))))
+      chg <- chg[order(chg$change),]
+      chg$freq <- cummax(chg$freq)
+      chg$br <- chg$freq/max(chg$freq)
+      return(chg$br[chg$change == (input$T2Score - input$T1Score)])
+      
     }
     if (input$Test == "LMD") {
-      MEMUNITS.br <- readRDS("MEMUNITSChg.RDS")
-      change <- input$T2Score - input$T1Score
-      return(MEMUNITS.br$CumFreq[MEMUNITS.br$ChgScore == change])
+      chg <- change$LMD[order(change$LMD)]
+      chg <- cumsum(table(chg))
+      chg <- data.frame(change = as.numeric(names(chg)), freq = chg)
+      chg <- rbind(chg, data.frame(change = c(min(chg$change):max(chg$change))[!(min(chg$change):max(chg$change) %in% chg$change)], 
+                                   freq = rep(0, length(c(min(chg$change):max(chg$change))[!(min(chg$change):max(chg$change) %in% chg$change)]))))
+      chg <- chg[order(chg$change),]
+      chg$freq <- cummax(chg$freq)
+      chg$br <- chg$freq/max(chg$freq)
+      return(chg$br[chg$change == (input$T2Score - input$T1Score)])
+      
     }
     if (input$Test == "Animals") {
-      ANIMALS.br <- readRDS("ANIMALSChg.RDS")
-      change <- input$T2Score - input$T1Score
-      return(ANIMALS.br$CumFreq[ANIMALS.br$ChgScore == change])
+      chg <- change$ANIMALS[order(change$ANIMALS)]
+      chg <- cumsum(table(chg))
+      chg <- data.frame(change = as.numeric(names(chg)), freq = chg)
+      chg <- rbind(chg, data.frame(change = c(min(chg$change):max(chg$change))[!(min(chg$change):max(chg$change) %in% chg$change)], 
+                                   freq = rep(0, length(c(min(chg$change):max(chg$change))[!(min(chg$change):max(chg$change) %in% chg$change)]))))
+      chg <- chg[order(chg$change),]
+      chg$freq <- cummax(chg$freq)
+      chg$br <- chg$freq/max(chg$freq)
+      return(chg$br[chg$change == (input$T2Score - input$T1Score)])
+      
     }
     if (input$Test == "Vegetables") {
-      VEG.br <- readRDS("VEGChg.RDS")
-      change <- input$T2Score - input$T1Score
-      return(VEG.br$CumFreq[VEG.br$ChgScore == change])
+      chg <- change$VEG[order(change$VEG)]
+      chg <- cumsum(table(chg))
+      chg <- data.frame(change = as.numeric(names(chg)), freq = chg)
+      chg <- rbind(chg, data.frame(change = c(min(chg$change):max(chg$change))[!(min(chg$change):max(chg$change) %in% chg$change)], 
+                                   freq = rep(0, length(c(min(chg$change):max(chg$change))[!(min(chg$change):max(chg$change) %in% chg$change)]))))
+      chg <- chg[order(chg$change),]
+      chg$freq <- cummax(chg$freq)
+      chg$br <- chg$freq/max(chg$freq)
+      return(chg$br[chg$change == (input$T2Score - input$T1Score)])
+      
     }
     if (input$Test == "BNT") {
-      BOSTON.br <- readRDS("BOSTONChg.RDS")
-      change <- input$T2Score - input$T1Score
-      return(BOSTON.br$CumFreq[BOSTON.br$ChgScore == change])
+      chg <- change$BNT[order(change$BNT)]
+      chg <- cumsum(table(chg))
+      chg <- data.frame(change = as.numeric(names(chg)), freq = chg)
+      chg <- rbind(chg, data.frame(change = c(min(chg$change):max(chg$change))[!(min(chg$change):max(chg$change) %in% chg$change)], 
+                                   freq = rep(0, length(c(min(chg$change):max(chg$change))[!(min(chg$change):max(chg$change) %in% chg$change)]))))
+      chg <- chg[order(chg$change),]
+      chg$freq <- cummax(chg$freq)
+      chg$br <- chg$freq/max(chg$freq)
+      return(chg$br[chg$change == (input$T2Score - input$T1Score)])
+      
     }
   })
   
   FreqPlot <- reactive({
+    change <- readRDS("change.RDS")
     if (input$Test == "MMSE") {
-      MMSE.br <- readRDS("MMSEChg.RDS")
-      return(MMSE.br)
+      chg <- change$MMSE[order(change$MMSE)]
+      chg <- cumsum(table(chg))
+      chg <- data.frame(change = as.numeric(names(chg)), freq = chg)
+      chg <- rbind(chg, data.frame(change = c(min(chg$change):max(chg$change))[!(min(chg$change):max(chg$change) %in% chg$change)], 
+                                   freq = rep(0, length(c(min(chg$change):max(chg$change))[!(min(chg$change):max(chg$change) %in% chg$change)]))))
+      chg <- chg[order(chg$change),]
+      chg$freq <- cummax(chg$freq)
+      chg$br <- chg$freq/max(chg$freq)
+      return(chg)
     }
     if (input$Test == "DSF") {
-      DIGIF.br <- readRDS("DIGIFChg.RDS")
-      return(DIGIF.br)
+      chg <- change$DIGIF[order(change$DIGIF)]
+      chg <- cumsum(table(chg))
+      chg <- data.frame(change = as.numeric(names(chg)), freq = chg)
+      chg <- rbind(chg, data.frame(change = c(min(chg$change):max(chg$change))[!(min(chg$change):max(chg$change) %in% chg$change)], 
+                                   freq = rep(0, length(c(min(chg$change):max(chg$change))[!(min(chg$change):max(chg$change) %in% chg$change)]))))
+      chg <- chg[order(chg$change),]
+      chg$freq <- cummax(chg$freq)
+      chg$br <- chg$freq/max(chg$freq)
+      return(chg)
     }
     if (input$Test == "DSB") {
-      DIGIB.br <- readRDS("DIGIBChg.RDS")
-      return(DIGIB.br)
+      chg <- change$DIGIB[order(change$DIGIB)]
+      chg <- cumsum(table(chg))
+      chg <- data.frame(change = as.numeric(names(chg)), freq = chg)
+      chg <- rbind(chg, data.frame(change = c(min(chg$change):max(chg$change))[!(min(chg$change):max(chg$change) %in% chg$change)], 
+                                   freq = rep(0, length(c(min(chg$change):max(chg$change))[!(min(chg$change):max(chg$change) %in% chg$change)]))))
+      chg <- chg[order(chg$change),]
+      chg$freq <- cummax(chg$freq)
+      chg$br <- chg$freq/max(chg$freq)
+      return(chg)
     }
     if (input$Test == "DSC") {
-      WAIS.br <- readRDS("WAISChg.RDS")
-      return(WAIS.br)
+      chg <- change$DSym[order(change$DSym)]
+      chg <- cumsum(table(chg))
+      chg <- data.frame(change = as.numeric(names(chg)), freq = chg)
+      chg <- rbind(chg, data.frame(change = c(min(chg$change):max(chg$change))[!(min(chg$change):max(chg$change) %in% chg$change)], 
+                                   freq = rep(0, length(c(min(chg$change):max(chg$change))[!(min(chg$change):max(chg$change) %in% chg$change)]))))
+      chg <- chg[order(chg$change),]
+      chg$freq <- cummax(chg$freq)
+      chg$br <- chg$freq/max(chg$freq)
+      return(chg)
     }
     if (input$Test == "TMTA") {
-      TRAILA.br <- readRDS("TRAILAChg.RDS")
-      return(TRAILA.br)
+      chg <- change$TrailsA[order(change$TrailsA)]
+      chg <- -chg
+      chg <- cumsum(table(chg))
+      chg <- data.frame(change = as.numeric(names(chg)), freq = chg)
+      chg <- rbind(chg, data.frame(change = c(min(chg$change):max(chg$change))[!(min(chg$change):max(chg$change) %in% chg$change)], 
+                                   freq = rep(0, length(c(min(chg$change):max(chg$change))[!(min(chg$change):max(chg$change) %in% chg$change)]))))
+      chg <- chg[order(chg$change),]
+      chg$freq <- cummax(chg$freq)
+      chg$br <- chg$freq/max(chg$freq)
+      chg$change <- -chg$change
+      return(chg)
     }
     if (input$Test == "TMTB") {
-      TRAILB.br <- readRDS("TRAILBChg.RDS")
-      return(TRAILB.br)
+      chg <- change$TrailsB[order(change$TrailsB)]
+      chg <- -chg
+      chg <- cumsum(table(chg))
+      chg <- data.frame(change = as.numeric(names(chg)), freq = chg)
+      chg <- rbind(chg, data.frame(change = c(min(chg$change):max(chg$change))[!(min(chg$change):max(chg$change) %in% chg$change)], 
+                                   freq = rep(0, length(c(min(chg$change):max(chg$change))[!(min(chg$change):max(chg$change) %in% chg$change)]))))
+      chg <- chg[order(chg$change),]
+      chg$freq <- cummax(chg$freq)
+      chg$br <- chg$freq/max(chg$freq)
+      chg$change <- -chg$change
+      return(chg)
     }
     if (input$Test == "LMI") {
-      LOGIMEM.br <- readRDS("LOGIMEMChg.RDS")
-      return(LOGIMEM.br)
+      chg <- change$LMI[order(change$LMI)]
+      chg <- cumsum(table(chg))
+      chg <- data.frame(change = as.numeric(names(chg)), freq = chg)
+      chg <- rbind(chg, data.frame(change = c(min(chg$change):max(chg$change))[!(min(chg$change):max(chg$change) %in% chg$change)], 
+                                   freq = rep(0, length(c(min(chg$change):max(chg$change))[!(min(chg$change):max(chg$change) %in% chg$change)]))))
+      chg <- chg[order(chg$change),]
+      chg$freq <- cummax(chg$freq)
+      chg$br <- chg$freq/max(chg$freq)
+      return(chg)
     }
     if (input$Test == "LMD") {
-      MEMUNITS.br <- readRDS("MEMUNITSChg.RDS")
-      return(MEMUNITS.br)
+      chg <- change$LMD[order(change$LMD)]
+      chg <- cumsum(table(chg))
+      chg <- data.frame(change = as.numeric(names(chg)), freq = chg)
+      chg <- rbind(chg, data.frame(change = c(min(chg$change):max(chg$change))[!(min(chg$change):max(chg$change) %in% chg$change)], 
+                                   freq = rep(0, length(c(min(chg$change):max(chg$change))[!(min(chg$change):max(chg$change) %in% chg$change)]))))
+      chg <- chg[order(chg$change),]
+      chg$freq <- cummax(chg$freq)
+      chg$br <- chg$freq/max(chg$freq)
+      return(chg)
     }
     if (input$Test == "Animals") {
-      ANIMALS.br <- readRDS("ANIMALSChg.RDS")
-      return(ANIMALS.br)
+      chg <- change$ANIMALS[order(change$ANIMALS)]
+      chg <- cumsum(table(chg))
+      chg <- data.frame(change = as.numeric(names(chg)), freq = chg)
+      chg <- rbind(chg, data.frame(change = c(min(chg$change):max(chg$change))[!(min(chg$change):max(chg$change) %in% chg$change)], 
+                                   freq = rep(0, length(c(min(chg$change):max(chg$change))[!(min(chg$change):max(chg$change) %in% chg$change)]))))
+      chg <- chg[order(chg$change),]
+      chg$freq <- cummax(chg$freq)
+      chg$br <- chg$freq/max(chg$freq)
+      return(chg)
     }
     if (input$Test == "Vegetables") {
-      VEG.br <- readRDS("VEGChg.RDS")
-      return(VEG.br)
+      chg <- change$VEG[order(change$VEG)]
+      chg <- cumsum(table(chg))
+      chg <- data.frame(change = as.numeric(names(chg)), freq = chg)
+      chg <- rbind(chg, data.frame(change = c(min(chg$change):max(chg$change))[!(min(chg$change):max(chg$change) %in% chg$change)], 
+                                   freq = rep(0, length(c(min(chg$change):max(chg$change))[!(min(chg$change):max(chg$change) %in% chg$change)]))))
+      chg <- chg[order(chg$change),]
+      chg$freq <- cummax(chg$freq)
+      chg$br <- chg$freq/max(chg$freq)
+      return(chg)
     }
     if (input$Test == "BNT") {
-      BOSTON.br <- readRDS("BOSTONChg.RDS")
-      return(BOSTON.br)
+      chg <- change$BNT[order(change$BNT)]
+      chg <- cumsum(table(chg))
+      chg <- data.frame(change = as.numeric(names(chg)), freq = chg)
+      chg <- rbind(chg, data.frame(change = c(min(chg$change):max(chg$change))[!(min(chg$change):max(chg$change) %in% chg$change)], 
+                                   freq = rep(0, length(c(min(chg$change):max(chg$change))[!(min(chg$change):max(chg$change) %in% chg$change)]))))
+      chg <- chg[order(chg$change),]
+      chg$freq <- cummax(chg$freq)
+      chg$br <- chg$freq/max(chg$freq)
+      return(chg)
     }
   })
+  
   
   output$PT2S <- renderText(paste0("Predicted Time 2 Score: ", Yprime()))
   output$LowerCI <- renderText({paste0("Lower Limit of ", as.numeric(input$PI), "% Prediction Interval: ", LowerCI())})
   output$UpperCI <- renderText({paste0("Upper Limit of ", as.numeric(input$PI), "% Prediction Interval: ", UpperCI())})
   x <- reactive({
-    if((input$T2Score - input$T1Score) < min(FreqPlot()$ChgScore)) min(FreqPlot()$ChgScore)
-    if((input$T2Score - input$T1Score) > max(FreqPlot()$ChgScore)) max(FreqPlot()$ChgScore) else (input$T2Score - input$T1Score)
+      if((input$T2Score - input$T1Score) < min(FreqPlot()$change)) min(FreqPlot()$change)
+      if((input$T2Score - input$T1Score) > max(FreqPlot()$change)) max(FreqPlot()$change) else (input$T2Score - input$T1Score)
+    })
+  
+  output$BaseRate <- renderText({
+    if (input$Test == "TMTA" | input$Test == "TMTB") {
+    paste0("The base rate of a score change of \u2265 ", x(), " points is ", round(100*BaseRate(),2), "%.")
+    } else     paste0("The base rate of a score change of \u2264 ", x(), " points is ", round(100*BaseRate(),2), "%.")  
   })
     
-  #output$BaseRate <- renderText({paste0("The base rate of a score change of \u2264 ", x(), " points is ", 100*BaseRate(), "%.")})
-  
   output$plot <- renderPlot({
-    #par(mfrow = c(1,2))
+    par(mfrow = c(1,2))
     plot(input$T2Score, 1, type = "p", xlab = "Score", axes = FALSE, ylab = "", 
          pch = 16, xlim = c(min(input$T2Score, Yprime(), LowerCI()), max(input$T2Score, Yprime(), UpperCI())),
          ylim=c(.5, 1.5))
@@ -358,8 +525,13 @@ shinyServer(function(input, output) {
     arrows(Yprime(), 1, UpperCI(), 1, col = "red", angle = 90)
     legend("top", pch = c(16, 17), col = c("black","red"), 
            c("Observed Time 2 Score", "Predicted Time 2 Score"))
-    #plot(FreqPlot(), type = "l", xlab = "Change", ylab = "Cumulative Percentage")
-
-    #points(x, BaseRate(), col = "black", pch = 16)
+    if (input$Test == "TMTA" | input$Test == "TMTB") {
+    plot(FreqPlot()$change, FreqPlot()$br, type = "l", xlab = "Change", ylab = "Cumulative Percentage", xlim = rev(range(FreqPlot()$change)))
+    points(x(), BaseRate(), col = "black", pch = 16)
+    } else {
+      plot(FreqPlot()$change, FreqPlot()$br, type = "l", xlab = "Change", ylab = "Cumulative Percentage")
+      points(x(), BaseRate(), col = "black", pch = 16)
+    }
   })
 })
+
