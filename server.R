@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 # 
-# Copyright (c) 2014 Brandon Gavett
+# Copyright (c) 2015 Brandon Gavett
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -21,214 +21,245 @@
 # SOFTWARE.
 
 library(shiny)
+library(lme4)
 
 # Define server logic required to calculate various reliable change indices
 shinyServer(function(input, output) {
   Yprime <- reactive({
     if (input$Test == "MMSE") {
-      new.MMSE <- data.frame(MMSE.1 = input$T1Score, AGE.1 = input$BAge, EDUC = input$Edu, Interval1 = input$Interval, CAUC = factor(input$Race), SEX = factor(input$Sex))
-      MMSE.lm <- readRDS("MMSE.RDS")
-      predMMSE <- round(predict(MMSE.lm, new.MMSE),2)
-      return(predMMSE)
+      newdat <- data.frame(MMSE.bl = input$T1Score, AGE.bl = input$BAge, 
+                           EDUC = input$Edu, vnumber = 2, CAUC = factor(input$Race, levels = c("Caucasian", "NonCaucasian")), 
+                           SEX = factor(input$Sex, levels = c("Male", "Female")), MMSE = input$T2Score)
+      model <- readRDS("MMSE.Rds")
+      mm <- model.matrix(terms(model), newdat)
+      newdat$test.fu <- y_prime <- predict(model, newdat, re.form = NA)
+      return(y_prime)
     }
     if (input$Test == "DSF") {
-      new.DIGIF <- data.frame(DIGIF.1 = input$T1Score, AGE.1 = input$BAge, EDUC = input$Edu, Interval1 = input$Interval, CAUC = factor(input$Race), SEX = factor(input$Sex))
-      DIGIF.lm <- readRDS("DIGIF.RDS")
-      predDIGIF <- round(predict(DIGIF.lm, new.DIGIF),2)
-      return(predDIGIF)
+      newdat <- data.frame(DIGIF.bl = input$T1Score, AGE.bl = input$BAge, 
+                           EDUC = input$Edu, vnumber = 2, CAUC = factor(input$Race, levels = c("Caucasian", "NonCaucasian")), 
+                           SEX = factor(input$Sex, levels = c("Male", "Female")), DIGIF = input$T2Score)
+      model <- readRDS("DIGIF.Rds")
+      mm <- model.matrix(terms(model), newdat)
+      newdat$test.fu <- y_prime <- predict(model, newdat, re.form = NA)
+      return(y_prime)
     }
     if (input$Test == "DSB") {
-      new.DIGIB <- data.frame(DIGIB.1 = input$T1Score, AGE.1 = input$BAge, EDUC = input$Edu, Interval1 = input$Interval, CAUC = factor(input$Race), SEX = factor(input$Sex))
-      DIGIB.lm <- readRDS("DIGIB.RDS")
-      predDIGIB <- round(predict(DIGIB.lm, new.DIGIB),2)
-      return(predDIGIB)
+      newdat <- data.frame(DIGIB.bl = input$T1Score, AGE.bl = input$BAge, 
+                           EDUC = input$Edu, vnumber = 2, CAUC = factor(input$Race, levels = c("Caucasian", "NonCaucasian")), 
+                           SEX = factor(input$Sex, levels = c("Male", "Female")), DIGIB = input$T2Score)
+      model <- readRDS("DIGIB.Rds")
+      mm <- model.matrix(terms(model), newdat)
+      newdat$test.fu <- y_prime <- predict(model, newdat, re.form = NA)
+      return(y_prime)
     }
     if (input$Test == "DSC") {
-      new.WAIS <- data.frame(WAIS.1 = input$T1Score, AGE.1 = input$BAge, EDUC = input$Edu, Interval1 = input$Interval, CAUC = factor(input$Race), SEX = factor(input$Sex))
-      WAIS.lm <- readRDS("WAIS.RDS")
-      predWAIS <- round(predict(WAIS.lm, new.WAIS),2)
-      return(predWAIS)
+      newdat <- data.frame(WAIS.bl = input$T1Score, AGE.bl = input$BAge, 
+                           EDUC = input$Edu, vnumber = 2, CAUC = factor(input$Race, levels = c("Caucasian", "NonCaucasian")), 
+                           SEX = factor(input$Sex, levels = c("Male", "Female")), WAIS = input$T2Score)
+      model <- readRDS("WAIS.Rds")
+      mm <- model.matrix(terms(model), newdat)
+      newdat$test.fu <- y_prime <- predict(model, newdat, re.form = NA)
+      return(y_prime)
     }
     if (input$Test == "TMTA") {
-      new.TRAILA <- data.frame(TRAILA.1 = input$T1Score, AGE.1 = input$BAge, EDUC = input$Edu, Interval1 = input$Interval, CAUC = factor(input$Race), SEX = factor(input$Sex))
-      TRAILA.lm <- readRDS("TRAILA.RDS")
-      predTRAILA <- round(predict(TRAILA.lm, new.TRAILA),2)
-      return(predTRAILA)
+      newdat <- data.frame(TRAILA.bl = input$T1Score, AGE.bl = input$BAge, 
+                           EDUC = input$Edu, vnumber = 2, CAUC = factor(input$Race, levels = c("Caucasian", "NonCaucasian")), 
+                           SEX = factor(input$Sex, levels = c("Male", "Female")), TRAILA = input$T2Score)
+      model <- readRDS("TRAILA.Rds")
+      mm <- model.matrix(terms(model), newdat)
+      newdat$test.fu <- y_prime <- predict(model, newdat, re.form = NA)
+      return(y_prime)
     }
     if (input$Test == "TMTB") {
-      new.TRAILB <- data.frame(TRAILB.1 = input$T1Score, AGE.1 = input$BAge, EDUC = input$Edu, Interval1 = input$Interval, CAUC = factor(input$Race), SEX = factor(input$Sex))
-      TRAILB.lm <- readRDS("TRAILB.RDS")
-      predTRAILB <- round(predict(TRAILB.lm, new.TRAILB),2)
-      return(predTRAILB)
+      newdat <- data.frame(TRAILB.bl = input$T1Score, AGE.bl = input$BAge, 
+                           EDUC = input$Edu, vnumber = 2, CAUC = factor(input$Race, levels = c("Caucasian", "NonCaucasian")), 
+                           SEX = factor(input$Sex, levels = c("Male", "Female")), TRAILB = input$T2Score)
+      model <- readRDS("TRAILB.Rds")
+      mm <- model.matrix(terms(model), newdat)
+      newdat$test.fu <- y_prime <- predict(model, newdat, re.form = NA)
+      return(y_prime)
     }
     if (input$Test == "LMI") {
-      new.LOGIMEM <- data.frame(LOGIMEM.1 = input$T1Score, AGE.1 = input$BAge, EDUC = input$Edu, Interval1 = input$Interval, CAUC = factor(input$Race), SEX = factor(input$Sex))
-      LOGIMEM.lm <- readRDS("LOGIMEM.RDS")
-      predLOGIMEM <- round(predict(LOGIMEM.lm, new.LOGIMEM),2)
-      return(predLOGIMEM)
+      newdat <- data.frame(LOGIMEM.bl = input$T1Score, AGE.bl = input$BAge, 
+                           EDUC = input$Edu, vnumber = 2, CAUC = factor(input$Race, levels = c("Caucasian", "NonCaucasian")), 
+                           SEX = factor(input$Sex, levels = c("Male", "Female")), LOGIMEM = input$T2Score)
+      model <- readRDS("LOGIMEM.Rds")
+      mm <- model.matrix(terms(model), newdat)
+      newdat$test.fu <- y_prime <- predict(model, newdat, re.form = NA)
+      return(y_prime)
     }
     if (input$Test == "LMD") {
-      new.MEMUNITS <- data.frame(MEMUNITS.1 = input$T1Score, AGE.1 = input$BAge, EDUC = input$Edu, Interval1 = input$Interval, CAUC = factor(input$Race), SEX = factor(input$Sex))
-      MEMUNITS.lm <- readRDS("MEMUNITS.RDS")
-      predMEMUNITS <- round(predict(MEMUNITS.lm, new.MEMUNITS),2)
-      return(predMEMUNITS)
+      newdat <- data.frame(MEMUNITS.bl = input$T1Score, AGE.bl = input$BAge, 
+                           EDUC = input$Edu, vnumber = 2, CAUC = factor(input$Race, levels = c("Caucasian", "NonCaucasian")), 
+                           SEX = factor(input$Sex, levels = c("Male", "Female")), MEMUNITS = input$T2Score)
+      model <- readRDS("MEMUNITS.Rds")
+      mm <- model.matrix(terms(model), newdat)
+      newdat$test.fu <- y_prime <- predict(model, newdat, re.form = NA)
+      return(y_prime)
     }
     if (input$Test == "Animals") {
-      new.ANIMALS <- data.frame(ANIMALS.1 = input$T1Score, AGE.1 = input$BAge, EDUC = input$Edu, Interval1 = input$Interval, CAUC = factor(input$Race), SEX = factor(input$Sex))
-      ANIMALS.lm <- readRDS("ANIMALS.RDS")
-      predANIMALS <- round(predict(ANIMALS.lm, new.ANIMALS),2)
-      return(predANIMALS)
+      newdat <- data.frame(ANIMALS.bl = input$T1Score, AGE.bl = input$BAge, 
+                           EDUC = input$Edu, vnumber = 2, CAUC = factor(input$Race, levels = c("Caucasian", "NonCaucasian")), 
+                           SEX = factor(input$Sex, levels = c("Male", "Female")), ANIMALS = input$T2Score)
+      model <- readRDS("ANIMALS.Rds")
+      mm <- model.matrix(terms(model), newdat)
+      newdat$test.fu <- y_prime <- predict(model, newdat, re.form = NA)
+      return(y_prime)
     }
     if (input$Test == "Vegetables") {
-      new.VEG <- data.frame(VEG.1 = input$T1Score, AGE.1 = input$BAge, EDUC = input$Edu, Interval1 = input$Interval, CAUC = factor(input$Race), SEX = factor(input$Sex))
-      VEG.lm <- readRDS("VEG.RDS")
-      predVEG <- round(predict(VEG.lm, new.VEG),2)
-      return(predVEG)
+      newdat <- data.frame(VEG.bl = input$T1Score, AGE.bl = input$BAge, 
+                           EDUC = input$Edu, vnumber = 2, CAUC = factor(input$Race, levels = c("Caucasian", "NonCaucasian")), 
+                           SEX = factor(input$Sex, levels = c("Male", "Female")), VEG = input$T2Score)
+      model <- readRDS("VEG.Rds")
+      mm <- model.matrix(terms(model), newdat)
+      newdat$test.fu <- y_prime <- predict(model, newdat, re.form = NA)
+      return(y_prime)
     }
     if (input$Test == "BNT") {
-      new.BOSTON <- data.frame(BOSTON.1 = input$T1Score, AGE.1 = input$BAge, EDUC = input$Edu, Interval1 = input$Interval, CAUC = factor(input$Race), SEX = factor(input$Sex))
-      BOSTON.lm <- readRDS("BOSTON.RDS")
-      predBOSTON <- round(predict(BOSTON.lm, new.BOSTON),2)
-      return(predBOSTON)
+      newdat <- data.frame(BOSTON.bl = input$T1Score, AGE.bl = input$BAge, 
+                           EDUC = input$Edu, vnumber = 2, CAUC = factor(input$Race, levels = c("Caucasian", "NonCaucasian")), 
+                           SEX = factor(input$Sex, levels = c("Male", "Female")), BOSTON = input$T2Score)
+      model <- readRDS("BOSTON.Rds")
+      mm <- model.matrix(terms(model), newdat)
+      newdat$test.fu <- y_prime <- predict(model, newdat, re.form = NA)
+      return(y_prime)
     }
   })
   
   
-  LowerCI <- reactive({
+  SEP <- reactive({
     if (input$Test == "MMSE") {
-      new.MMSE <- data.frame(MMSE.1 = input$T1Score, AGE.1 = input$BAge, EDUC = input$Edu, Interval1 = input$Interval, CAUC = factor(input$Race), SEX = factor(input$Sex))
-      MMSE.lm <- readRDS("MMSE.RDS")
-      predMMSE <- round(predict(MMSE.lm, new.MMSE, interval = "prediction", level = input$PI/100),2)
-      return(predMMSE[2])
+      newdat <- data.frame(MMSE.bl = input$T1Score, AGE.bl = input$BAge, 
+                           EDUC = input$Edu, vnumber = 2, CAUC = factor(input$Race, levels = c("Caucasian", "NonCaucasian")), 
+                           SEX = factor(input$Sex, levels = c("Male", "Female")), MMSE = input$T2Score)
+      model <- readRDS("MMSE.Rds")
+      mm <- model.matrix(terms(model), newdat)
+      #newdat$test.fu <- predict(model, newdat, re.form = NA)
+      pvar1 <- diag(mm %*% tcrossprod(vcov(model),mm))
+      tvar1 <- pvar1+summary(model)$sigma^2
+      newdat$se <- se <- sqrt(tvar1)
+      return(se)
     }
     if (input$Test == "DSF") {
-      new.DIGIF <- data.frame(DIGIF.1 = input$T1Score, AGE.1 = input$BAge, EDUC = input$Edu, Interval1 = input$Interval, CAUC = factor(input$Race), SEX = factor(input$Sex))
-      DIGIF.lm <- readRDS("DIGIF.RDS")
-      predDIGIF <- round(predict(DIGIF.lm, new.DIGIF, interval = "prediction", level = input$PI/100),2)
-      return(predDIGIF[2])
+      newdat <- data.frame(DIGIF.bl = input$T1Score, AGE.bl = input$BAge, 
+                           EDUC = input$Edu, vnumber = 2, CAUC = factor(input$Race, levels = c("Caucasian", "NonCaucasian")), 
+                           SEX = factor(input$Sex, levels = c("Male", "Female")), DIGIF = input$T2Score)
+      model <- readRDS("DIGIF.Rds")
+      mm <- model.matrix(terms(model), newdat)
+      #newdat$test.fu <- predict(model, newdat, re.form = NA)
+      pvar1 <- diag(mm %*% tcrossprod(vcov(model),mm))
+      tvar1 <- pvar1+summary(model)$sigma^2
+      newdat$se <- se <- sqrt(tvar1)
+      return(se)
     }
     if (input$Test == "DSB") {
-      new.DIGIB <- data.frame(DIGIB.1 = input$T1Score, AGE.1 = input$BAge, EDUC = input$Edu, Interval1 = input$Interval, CAUC = factor(input$Race), SEX = factor(input$Sex))
-      DIGIB.lm <- readRDS("DIGIB.RDS")
-      predDIGIB <- round(predict(DIGIB.lm, new.DIGIB, interval = "prediction", level = input$PI/100),2)
-      return(predDIGIB[2])
+      newdat <- data.frame(DIGIB.bl = input$T1Score, AGE.bl = input$BAge, 
+                           EDUC = input$Edu, vnumber = 2, CAUC = factor(input$Race, levels = c("Caucasian", "NonCaucasian")), 
+                           SEX = factor(input$Sex, levels = c("Male", "Female")), DIGIB = input$T2Score)
+      model <- readRDS("DIGIB.Rds")
+      mm <- model.matrix(terms(model), newdat)
+      #newdat$test.fu <- predict(model, newdat, re.form = NA)
+      pvar1 <- diag(mm %*% tcrossprod(vcov(model),mm))
+      tvar1 <- pvar1+summary(model)$sigma^2
+      newdat$se <- se <- sqrt(tvar1)
+      return(se)
     }
     if (input$Test == "DSC") {
-      new.WAIS <- data.frame(WAIS.1 = input$T1Score, AGE.1 = input$BAge, EDUC = input$Edu, Interval1 = input$Interval, CAUC = factor(input$Race), SEX = factor(input$Sex))
-      WAIS.lm <- readRDS("WAIS.RDS")
-      predWAIS <- round(predict(WAIS.lm, new.WAIS, interval = "prediction", level = input$PI/100),2)
-      return(predWAIS[2])
+      newdat <- data.frame(WAIS.bl = input$T1Score, AGE.bl = input$BAge, 
+                           EDUC = input$Edu, vnumber = 2, CAUC = factor(input$Race, levels = c("Caucasian", "NonCaucasian")), 
+                           SEX = factor(input$Sex, levels = c("Male", "Female")), WAIS = input$T2Score)
+      model <- readRDS("WAIS.Rds")
+      mm <- model.matrix(terms(model), newdat)
+      #newdat$test.fu <- predict(model, newdat, re.form = NA)
+      pvar1 <- diag(mm %*% tcrossprod(vcov(model),mm))
+      tvar1 <- pvar1+summary(model)$sigma^2
+      newdat$se <- se <- sqrt(tvar1)
+      return(se)
     }
     if (input$Test == "TMTA") {
-      new.TRAILA <- data.frame(TRAILA.1 = input$T1Score, AGE.1 = input$BAge, EDUC = input$Edu, Interval1 = input$Interval, CAUC = factor(input$Race), SEX = factor(input$Sex))
-      TRAILA.lm <- readRDS("TRAILA.RDS")
-      predTRAILA <- round(predict(TRAILA.lm, new.TRAILA, interval = "prediction", level = input$PI/100),2)
-      return(predTRAILA[2])
+      newdat <- data.frame(TRAILA.bl = input$T1Score, AGE.bl = input$BAge, 
+                           EDUC = input$Edu, vnumber = 2, CAUC = factor(input$Race, levels = c("Caucasian", "NonCaucasian")), 
+                           SEX = factor(input$Sex, levels = c("Male", "Female")), TRAILA = input$T2Score)
+      model <- readRDS("TRAILA.Rds")
+      mm <- model.matrix(terms(model), newdat)
+      #newdat$test.fu <- predict(model, newdat, re.form = NA)
+      pvar1 <- diag(mm %*% tcrossprod(vcov(model),mm))
+      tvar1 <- pvar1+summary(model)$sigma^2
+      newdat$se <- se <- sqrt(tvar1)
+      return(se)
     }
     if (input$Test == "TMTB") {
-      new.TRAILB <- data.frame(TRAILB.1 = input$T1Score, AGE.1 = input$BAge, EDUC = input$Edu, Interval1 = input$Interval, CAUC = factor(input$Race), SEX = factor(input$Sex))
-      TRAILB.lm <- readRDS("TRAILB.RDS")
-      predTRAILB <- round(predict(TRAILB.lm, new.TRAILB, interval = "prediction", level = input$PI/100),2)
-      return(predTRAILB[2])
+      newdat <- data.frame(TRAILB.bl = input$T1Score, AGE.bl = input$BAge, 
+                           EDUC = input$Edu, vnumber = 2, CAUC = factor(input$Race, levels = c("Caucasian", "NonCaucasian")), 
+                           SEX = factor(input$Sex, levels = c("Male", "Female")), TRAILB = input$T2Score)
+      model <- readRDS("TRAILB.Rds")
+      mm <- model.matrix(terms(model), newdat)
+      #newdat$test.fu <- predict(model, newdat, re.form = NA)
+      pvar1 <- diag(mm %*% tcrossprod(vcov(model),mm))
+      tvar1 <- pvar1+summary(model)$sigma^2
+      newdat$se <- se <- sqrt(tvar1)
+      return(se)
     }
     if (input$Test == "LMI") {
-      new.LOGIMEM <- data.frame(LOGIMEM.1 = input$T1Score, AGE.1 = input$BAge, EDUC = input$Edu, Interval1 = input$Interval, CAUC = factor(input$Race), SEX = factor(input$Sex))
-      LOGIMEM.lm <- readRDS("LOGIMEM.RDS")
-      predLOGIMEM <- round(predict(LOGIMEM.lm, new.LOGIMEM, interval = "prediction", level = input$PI/100),2)
-      return(predLOGIMEM[2])
+      newdat <- data.frame(LOGIMEM.bl = input$T1Score, AGE.bl = input$BAge, 
+                           EDUC = input$Edu, vnumber = 2, CAUC = factor(input$Race, levels = c("Caucasian", "NonCaucasian")), 
+                           SEX = factor(input$Sex, levels = c("Male", "Female")), LOGIMEM = input$T2Score)
+      model <- readRDS("LOGIMEM.Rds")
+      mm <- model.matrix(terms(model), newdat)
+      #newdat$test.fu <- predict(model, newdat, re.form = NA)
+      pvar1 <- diag(mm %*% tcrossprod(vcov(model),mm))
+      tvar1 <- pvar1+summary(model)$sigma^2
+      newdat$se <- se <- sqrt(tvar1)
+      return(se)
     }
     if (input$Test == "LMD") {
-      new.MEMUNITS <- data.frame(MEMUNITS.1 = input$T1Score, AGE.1 = input$BAge, EDUC = input$Edu, Interval1 = input$Interval, CAUC = factor(input$Race), SEX = factor(input$Sex))
-      MEMUNITS.lm <- readRDS("MEMUNITS.RDS")
-      predMEMUNITS <- round(predict(MEMUNITS.lm, new.MEMUNITS, interval = "prediction", level = input$PI/100),2)
-      return(predMEMUNITS[2])
+      newdat <- data.frame(MEMUNITS.bl = input$T1Score, AGE.bl = input$BAge, 
+                           EDUC = input$Edu, vnumber = 2, CAUC = factor(input$Race, levels = c("Caucasian", "NonCaucasian")), 
+                           SEX = factor(input$Sex, levels = c("Male", "Female")), MEMUNITS = input$T2Score)
+      model <- readRDS("MEMUNITS.Rds")
+      mm <- model.matrix(terms(model), newdat)
+      #newdat$test.fu <- predict(model, newdat, re.form = NA)
+      pvar1 <- diag(mm %*% tcrossprod(vcov(model),mm))
+      tvar1 <- pvar1+summary(model)$sigma^2
+      newdat$se <- se <- sqrt(tvar1)
+      return(se)
     }
     if (input$Test == "Animals") {
-      new.ANIMALS <- data.frame(ANIMALS.1 = input$T1Score, AGE.1 = input$BAge, EDUC = input$Edu, Interval1 = input$Interval, CAUC = factor(input$Race), SEX = factor(input$Sex))
-      ANIMALS.lm <- readRDS("ANIMALS.RDS")
-      predANIMALS <- round(predict(ANIMALS.lm, new.ANIMALS, interval = "prediction", level = input$PI/100),2)
-      return(predANIMALS[2])
+      newdat <- data.frame(ANIMALS.bl = input$T1Score, AGE.bl = input$BAge, 
+                           EDUC = input$Edu, vnumber = 2, CAUC = factor(input$Race, levels = c("Caucasian", "NonCaucasian")), 
+                           SEX = factor(input$Sex, levels = c("Male", "Female")), ANIMALS = input$T2Score)
+      model <- readRDS("ANIMALS.Rds")
+      mm <- model.matrix(terms(model), newdat)
+      #newdat$test.fu <- predict(model, newdat, re.form = NA)
+      pvar1 <- diag(mm %*% tcrossprod(vcov(model),mm))
+      tvar1 <- pvar1+summary(model)$sigma^2
+      newdat$se <- se <- sqrt(tvar1)
+      return(se)
     }
     if (input$Test == "Vegetables") {
-      new.VEG <- data.frame(VEG.1 = input$T1Score, AGE.1 = input$BAge, EDUC = input$Edu, Interval1 = input$Interval, CAUC = factor(input$Race), SEX = factor(input$Sex))
-      VEG.lm <- readRDS("VEG.RDS")
-      predVEG <- round(predict(VEG.lm, new.VEG, interval = "prediction", level = input$PI/100),2)
-      return(predVEG[2])
+      newdat <- data.frame(VEG.bl = input$T1Score, AGE.bl = input$BAge, 
+                           EDUC = input$Edu, vnumber = 2, CAUC = factor(input$Race, levels = c("Caucasian", "NonCaucasian")), 
+                           SEX = factor(input$Sex, levels = c("Male", "Female")), VEG = input$T2Score)
+      model <- readRDS("VEG.Rds")
+      mm <- model.matrix(terms(model), newdat)
+      #newdat$test.fu <- predict(model, newdat, re.form = NA)
+      pvar1 <- diag(mm %*% tcrossprod(vcov(model),mm))
+      tvar1 <- pvar1+summary(model)$sigma^2
+      newdat$se <- se <- sqrt(tvar1)
+      return(se)
     }
     if (input$Test == "BNT") {
-      new.BOSTON <- data.frame(BOSTON.1 = input$T1Score, AGE.1 = input$BAge, EDUC = input$Edu, Interval1 = input$Interval, CAUC = factor(input$Race), SEX = factor(input$Sex))
-      BOSTON.lm <- readRDS("BOSTON.RDS")
-      predBOSTON <- round(predict(BOSTON.lm, new.BOSTON, interval = "prediction", level = input$PI/100),2)
-      return(predBOSTON[2])
-    }
-  })
-  
-  UpperCI <- reactive({
-    if (input$Test == "MMSE") {
-      new.MMSE <- data.frame(MMSE.1 = input$T1Score, AGE.1 = input$BAge, EDUC = input$Edu, Interval1 = input$Interval, CAUC = factor(input$Race), SEX = factor(input$Sex))
-      MMSE.lm <- readRDS("MMSE.RDS")
-      predMMSE <- round(predict(MMSE.lm, new.MMSE, interval = "prediction", level = input$PI/100),2)
-      return(predMMSE[3])
-    }
-    if (input$Test == "DSF") {
-      new.DIGIF <- data.frame(DIGIF.1 = input$T1Score, AGE.1 = input$BAge, EDUC = input$Edu, Interval1 = input$Interval, CAUC = factor(input$Race), SEX = factor(input$Sex))
-      DIGIF.lm <- readRDS("DIGIF.RDS")
-      predDIGIF <- round(predict(DIGIF.lm, new.DIGIF, interval = "prediction", level = input$PI/100),2)
-      return(predDIGIF[3])
-    }
-    if (input$Test == "DSB") {
-      new.DIGIB <- data.frame(DIGIB.1 = input$T1Score, AGE.1 = input$BAge, EDUC = input$Edu, Interval1 = input$Interval, CAUC = factor(input$Race), SEX = factor(input$Sex))
-      DIGIB.lm <- readRDS("DIGIB.RDS")
-      predDIGIB <- round(predict(DIGIB.lm, new.DIGIB, interval = "prediction", level = input$PI/100),2)
-      return(predDIGIB[3])
-    }
-    if (input$Test == "DSC") {
-      new.WAIS <- data.frame(WAIS.1 = input$T1Score, AGE.1 = input$BAge, EDUC = input$Edu, Interval1 = input$Interval, CAUC = factor(input$Race), SEX = factor(input$Sex))
-      WAIS.lm <- readRDS("WAIS.RDS")
-      predWAIS <- round(predict(WAIS.lm, new.WAIS, interval = "prediction", level = input$PI/100),2)
-      return(predWAIS[3])
-    }
-    if (input$Test == "TMTA") {
-      new.TRAILA <- data.frame(TRAILA.1 = input$T1Score, AGE.1 = input$BAge, EDUC = input$Edu, Interval1 = input$Interval, CAUC = factor(input$Race), SEX = factor(input$Sex))
-      TRAILA.lm <- readRDS("TRAILA.RDS")
-      predTRAILA <- round(predict(TRAILA.lm, new.TRAILA, interval = "prediction", level = input$PI/100),2)
-      return(predTRAILA[3])
-    }
-    if (input$Test == "TMTB") {
-      new.TRAILB <- data.frame(TRAILB.1 = input$T1Score, AGE.1 = input$BAge, EDUC = input$Edu, Interval1 = input$Interval, CAUC = factor(input$Race), SEX = factor(input$Sex))
-      TRAILB.lm <- readRDS("TRAILB.RDS")
-      predTRAILB <- round(predict(TRAILB.lm, new.TRAILB, interval = "prediction", level = input$PI/100),2)
-      return(predTRAILB[3])
-    }
-    if (input$Test == "LMI") {
-      new.LOGIMEM <- data.frame(LOGIMEM.1 = input$T1Score, AGE.1 = input$BAge, EDUC = input$Edu, Interval1 = input$Interval, CAUC = factor(input$Race), SEX = factor(input$Sex))
-      LOGIMEM.lm <- readRDS("LOGIMEM.RDS")
-      predLOGIMEM <- round(predict(LOGIMEM.lm, new.LOGIMEM, interval = "prediction", level = input$PI/100),2)
-      return(predLOGIMEM[3])
-    }
-    if (input$Test == "LMD") {
-      new.MEMUNITS <- data.frame(MEMUNITS.1 = input$T1Score, AGE.1 = input$BAge, EDUC = input$Edu, Interval1 = input$Interval, CAUC = factor(input$Race), SEX = factor(input$Sex))
-      MEMUNITS.lm <- readRDS("MEMUNITS.RDS")
-      predMEMUNITS <- round(predict(MEMUNITS.lm, new.MEMUNITS, interval = "prediction", level = input$PI/100),2)
-      return(predMEMUNITS[3])
-    }
-    if (input$Test == "Animals") {
-      new.ANIMALS <- data.frame(ANIMALS.1 = input$T1Score, AGE.1 = input$BAge, EDUC = input$Edu, Interval1 = input$Interval, CAUC = factor(input$Race), SEX = factor(input$Sex))
-      ANIMALS.lm <- readRDS("ANIMALS.RDS")
-      predANIMALS <- round(predict(ANIMALS.lm, new.ANIMALS, interval = "prediction", level = input$PI/100),2)
-      return(predANIMALS[3])
-    }
-    if (input$Test == "Vegetables") {
-      new.VEG <- data.frame(VEG.1 = input$T1Score, AGE.1 = input$BAge, EDUC = input$Edu, Interval1 = input$Interval, CAUC = factor(input$Race), SEX = factor(input$Sex))
-      VEG.lm <- readRDS("VEG.RDS")
-      predVEG <- round(predict(VEG.lm, new.VEG, interval = "prediction", level = input$PI/100),2)
-      return(predVEG[3])
-    }
-    if (input$Test == "BNT") {
-      new.BOSTON <- data.frame(BOSTON.1 = input$T1Score, AGE.1 = input$BAge, EDUC = input$Edu, Interval1 = input$Interval, CAUC = factor(input$Race), SEX = factor(input$Sex))
-      BOSTON.lm <- readRDS("BOSTON.RDS")
-      predBOSTON <- round(predict(BOSTON.lm, new.BOSTON, interval = "prediction", level = input$PI/100),2)
-      return(predBOSTON[3])
+      newdat <- data.frame(BOSTON.bl = input$T1Score, AGE.bl = input$BAge, 
+                           EDUC = input$Edu, vnumber = 2, CAUC = factor(input$Race, levels = c("Caucasian", "NonCaucasian")), 
+                           SEX = factor(input$Sex, levels = c("Male", "Female")), BOSTON = input$T2Score)
+      model <- readRDS("BOSTON.Rds")
+      mm <- model.matrix(terms(model), newdat)
+      #newdat$test.fu <- predict(model, newdat, re.form = NA)
+      pvar1 <- diag(mm %*% tcrossprod(vcov(model),mm))
+      tvar1 <- pvar1+summary(model)$sigma^2
+      newdat$se <- se <- sqrt(tvar1)
+      return(se)
     }
   })
   
@@ -500,38 +531,43 @@ shinyServer(function(input, output) {
   })
   
   
-  output$PT2S <- renderText(paste0("Predicted Time 2 Score: ", Yprime()))
-  output$LowerCI <- renderText({paste0("Lower Limit of ", as.numeric(input$PI), "% Prediction Interval: ", LowerCI())})
-  output$UpperCI <- renderText({paste0("Upper Limit of ", as.numeric(input$PI), "% Prediction Interval: ", UpperCI())})
+  output$PT2S <- renderText(paste0("Predicted Time 2 Score: ", round(Yprime(),2)))
+  output$SEP <- renderText(paste0("Standard Error of the Prediction: ", round(SEP(),2)))
+  output$LowerCI <- renderText({paste0("Lower Limit of ", as.numeric(input$PI), "% Prediction Interval: ", round(Yprime()-SEP()*qnorm(as.numeric(input$PI)/100),2))})
+  output$UpperCI <- renderText({paste0("Upper Limit of ", as.numeric(input$PI), "% Prediction Interval: ", round(Yprime()+SEP()*qnorm(as.numeric(input$PI)/100),2))})
+  output$zscore <- renderText(paste0("z-score: ", 
+                                     round(((input$T2Score-Yprime())/SEP()),2)
+                                     ))
   x <- reactive({
-      if((input$T2Score - input$T1Score) < min(FreqPlot()$change)) min(FreqPlot()$change)
-      if((input$T2Score - input$T1Score) > max(FreqPlot()$change)) max(FreqPlot()$change) else (input$T2Score - input$T1Score)
-    })
+    if((input$T2Score - input$T1Score) < min(FreqPlot()$change)) min(FreqPlot()$change)
+    if((input$T2Score - input$T1Score) > max(FreqPlot()$change)) max(FreqPlot()$change) else (input$T2Score - input$T1Score)
+  })
   
   output$BaseRate <- renderText({
     if (input$Test == "TMTA" | input$Test == "TMTB") {
-    paste0("The base rate of a score change of \u2265 ", x(), " points is ", round(100*BaseRate(),2), "%.")
+      paste0("The base rate of a score change of \u2265 ", x(), " points is ", round(100*BaseRate(),2), "%.")
     } else     paste0("The base rate of a score change of \u2264 ", x(), " points is ", round(100*BaseRate(),2), "%.")  
   })
-    
+  
   output$plot <- renderPlot({
     par(mfrow = c(1,2))
     plot(input$T2Score, 1, type = "p", xlab = "Score", axes = FALSE, ylab = "", 
-         pch = 16, xlim = c(min(input$T2Score, Yprime(), LowerCI()), max(input$T2Score, Yprime(), UpperCI())),
+         pch = 16, xlim = c(min(input$T2Score, Yprime(), Yprime()-SEP()*qnorm(as.numeric(input$PI)/100)), max(input$T2Score, Yprime(), Yprime()+SEP()*qnorm(as.numeric(input$PI)/100))),
          ylim=c(.5, 1.5))
     axis(1)
     points(Yprime(), 1, pch = 17, col = "red")
-    arrows(Yprime(), 1, LowerCI(), 1, col = "red", angle = 90)
-    arrows(Yprime(), 1, UpperCI(), 1, col = "red", angle = 90)
+    arrows(Yprime(), 1, Yprime()-SEP()*qnorm(as.numeric(input$PI)/100), 1, col = "red", angle = 90)
+    arrows(Yprime(), 1, Yprime()+SEP()*qnorm(as.numeric(input$PI)/100), 1, col = "red", angle = 90)
     legend("top", pch = c(16, 17), col = c("black","red"), 
            c("Observed Time 2 Score", "Predicted Time 2 Score"))
     if (input$Test == "TMTA" | input$Test == "TMTB") {
-    plot(FreqPlot()$change, FreqPlot()$br, type = "l", xlab = "Change", ylab = "Cumulative Percentage", xlim = rev(range(FreqPlot()$change)))
-    points(x(), BaseRate(), col = "black", pch = 16)
+      plot(FreqPlot()$change, FreqPlot()$br, type = "l", xlab = "Change", ylab = "Cumulative Percentage", xlim = rev(range(FreqPlot()$change)))
+      points(x(), BaseRate(), col = "black", pch = 16)
     } else {
       plot(FreqPlot()$change, FreqPlot()$br, type = "l", xlab = "Change", ylab = "Cumulative Percentage")
       points(x(), BaseRate(), col = "black", pch = 16)
     }
   })
 })
+
 
