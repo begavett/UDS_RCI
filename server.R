@@ -29,7 +29,8 @@ shinyServer(function(input, output) {
     if (input$Test == "MMSE") {
       newdat <- data.frame(MMSE.bl = input$T1Score, AGE.bl = input$BAge, 
                            EDUC = input$Edu, vnumber = 2, CAUC = factor(input$Race, levels = c("Caucasian", "NonCaucasian")), 
-                           SEX = factor(input$Sex, levels = c("Male", "Female")), MMSE = input$T2Score)
+                           SEX = factor(input$Sex, levels = c("Male", "Female")), MMSE = input$T2Score,
+                           TfromBL = (as.numeric(input$date2 - input$date1)/365.25), vnumber = input$vnumber)
       model <- readRDS("MMSE.Rds")
       mm <- model.matrix(terms(model), newdat)
       newdat$test.fu <- y_prime <- predict(model, newdat, re.form = NA)
@@ -38,7 +39,8 @@ shinyServer(function(input, output) {
     if (input$Test == "DSF") {
       newdat <- data.frame(DIGIF.bl = input$T1Score, AGE.bl = input$BAge, 
                            EDUC = input$Edu, vnumber = 2, CAUC = factor(input$Race, levels = c("Caucasian", "NonCaucasian")), 
-                           SEX = factor(input$Sex, levels = c("Male", "Female")), DIGIF = input$T2Score)
+                           SEX = factor(input$Sex, levels = c("Male", "Female")), DIGIF = input$T2Score,
+                           TfromBL = as.numeric((input$date2 - input$date1)/365.25), vnumber = input$vnumber)
       model <- readRDS("DIGIF.Rds")
       mm <- model.matrix(terms(model), newdat)
       newdat$test.fu <- y_prime <- predict(model, newdat, re.form = NA)
@@ -47,7 +49,8 @@ shinyServer(function(input, output) {
     if (input$Test == "DSB") {
       newdat <- data.frame(DIGIB.bl = input$T1Score, AGE.bl = input$BAge, 
                            EDUC = input$Edu, vnumber = 2, CAUC = factor(input$Race, levels = c("Caucasian", "NonCaucasian")), 
-                           SEX = factor(input$Sex, levels = c("Male", "Female")), DIGIB = input$T2Score)
+                           SEX = factor(input$Sex, levels = c("Male", "Female")), DIGIB = input$T2Score,
+                           TfromBL = as.numeric((input$date2 - input$date1)/365.25), vnumber = input$vnumber)
       model <- readRDS("DIGIB.Rds")
       mm <- model.matrix(terms(model), newdat)
       newdat$test.fu <- y_prime <- predict(model, newdat, re.form = NA)
@@ -56,7 +59,8 @@ shinyServer(function(input, output) {
     if (input$Test == "DSC") {
       newdat <- data.frame(WAIS.bl = input$T1Score, AGE.bl = input$BAge, 
                            EDUC = input$Edu, vnumber = 2, CAUC = factor(input$Race, levels = c("Caucasian", "NonCaucasian")), 
-                           SEX = factor(input$Sex, levels = c("Male", "Female")), WAIS = input$T2Score)
+                           SEX = factor(input$Sex, levels = c("Male", "Female")), WAIS = input$T2Score,
+                           TfromBL = as.numeric((input$date2 - input$date1)/365.25), vnumber = input$vnumber)
       model <- readRDS("WAIS.Rds")
       mm <- model.matrix(terms(model), newdat)
       newdat$test.fu <- y_prime <- predict(model, newdat, re.form = NA)
@@ -65,7 +69,8 @@ shinyServer(function(input, output) {
     if (input$Test == "TMTA") {
       newdat <- data.frame(TRAILA.bl = input$T1Score, AGE.bl = input$BAge, 
                            EDUC = input$Edu, vnumber = 2, CAUC = factor(input$Race, levels = c("Caucasian", "NonCaucasian")), 
-                           SEX = factor(input$Sex, levels = c("Male", "Female")), TRAILA = input$T2Score)
+                           SEX = factor(input$Sex, levels = c("Male", "Female")), TRAILA = input$T2Score,
+                           TfromBL = as.numeric((input$date2 - input$date1)/365.25), vnumber = input$vnumber)
       model <- readRDS("TRAILA.Rds")
       mm <- model.matrix(terms(model), newdat)
       newdat$test.fu <- y_prime <- predict(model, newdat, re.form = NA)
@@ -74,7 +79,8 @@ shinyServer(function(input, output) {
     if (input$Test == "TMTB") {
       newdat <- data.frame(TRAILB.bl = input$T1Score, AGE.bl = input$BAge, 
                            EDUC = input$Edu, vnumber = 2, CAUC = factor(input$Race, levels = c("Caucasian", "NonCaucasian")), 
-                           SEX = factor(input$Sex, levels = c("Male", "Female")), TRAILB = input$T2Score)
+                           SEX = factor(input$Sex, levels = c("Male", "Female")), TRAILB = input$T2Score,
+                           TfromBL = as.numeric((input$date2 - input$date1)/365.25), vnumber = input$vnumber)
       model <- readRDS("TRAILB.Rds")
       mm <- model.matrix(terms(model), newdat)
       newdat$test.fu <- y_prime <- predict(model, newdat, re.form = NA)
@@ -83,7 +89,8 @@ shinyServer(function(input, output) {
     if (input$Test == "LMI") {
       newdat <- data.frame(LOGIMEM.bl = input$T1Score, AGE.bl = input$BAge, 
                            EDUC = input$Edu, vnumber = 2, CAUC = factor(input$Race, levels = c("Caucasian", "NonCaucasian")), 
-                           SEX = factor(input$Sex, levels = c("Male", "Female")), LOGIMEM = input$T2Score)
+                           SEX = factor(input$Sex, levels = c("Male", "Female")), LOGIMEM = input$T2Score,
+                           TfromBL = as.numeric((input$date2 - input$date1)/365.25), vnumber = input$vnumber)
       model <- readRDS("LOGIMEM.Rds")
       mm <- model.matrix(terms(model), newdat)
       newdat$test.fu <- y_prime <- predict(model, newdat, re.form = NA)
@@ -92,7 +99,8 @@ shinyServer(function(input, output) {
     if (input$Test == "LMD") {
       newdat <- data.frame(MEMUNITS.bl = input$T1Score, AGE.bl = input$BAge, 
                            EDUC = input$Edu, vnumber = 2, CAUC = factor(input$Race, levels = c("Caucasian", "NonCaucasian")), 
-                           SEX = factor(input$Sex, levels = c("Male", "Female")), MEMUNITS = input$T2Score)
+                           SEX = factor(input$Sex, levels = c("Male", "Female")), MEMUNITS = input$T2Score,
+                           TfromBL = as.numeric((input$date2 - input$date1)/365.25), vnumber = input$vnumber)
       model <- readRDS("MEMUNITS.Rds")
       mm <- model.matrix(terms(model), newdat)
       newdat$test.fu <- y_prime <- predict(model, newdat, re.form = NA)
@@ -101,7 +109,8 @@ shinyServer(function(input, output) {
     if (input$Test == "Animals") {
       newdat <- data.frame(ANIMALS.bl = input$T1Score, AGE.bl = input$BAge, 
                            EDUC = input$Edu, vnumber = 2, CAUC = factor(input$Race, levels = c("Caucasian", "NonCaucasian")), 
-                           SEX = factor(input$Sex, levels = c("Male", "Female")), ANIMALS = input$T2Score)
+                           SEX = factor(input$Sex, levels = c("Male", "Female")), ANIMALS = input$T2Score,
+                           TfromBL = as.numeric((input$date2 - input$date1)/365.25), vnumber = input$vnumber)
       model <- readRDS("ANIMALS.Rds")
       mm <- model.matrix(terms(model), newdat)
       newdat$test.fu <- y_prime <- predict(model, newdat, re.form = NA)
@@ -110,7 +119,8 @@ shinyServer(function(input, output) {
     if (input$Test == "Vegetables") {
       newdat <- data.frame(VEG.bl = input$T1Score, AGE.bl = input$BAge, 
                            EDUC = input$Edu, vnumber = 2, CAUC = factor(input$Race, levels = c("Caucasian", "NonCaucasian")), 
-                           SEX = factor(input$Sex, levels = c("Male", "Female")), VEG = input$T2Score)
+                           SEX = factor(input$Sex, levels = c("Male", "Female")), VEG = input$T2Score,
+                           TfromBL = as.numeric((input$date2 - input$date1)/365.25), vnumber = input$vnumber)
       model <- readRDS("VEG.Rds")
       mm <- model.matrix(terms(model), newdat)
       newdat$test.fu <- y_prime <- predict(model, newdat, re.form = NA)
@@ -119,7 +129,8 @@ shinyServer(function(input, output) {
     if (input$Test == "BNT") {
       newdat <- data.frame(BOSTON.bl = input$T1Score, AGE.bl = input$BAge, 
                            EDUC = input$Edu, vnumber = 2, CAUC = factor(input$Race, levels = c("Caucasian", "NonCaucasian")), 
-                           SEX = factor(input$Sex, levels = c("Male", "Female")), BOSTON = input$T2Score)
+                           SEX = factor(input$Sex, levels = c("Male", "Female")), BOSTON = input$T2Score,
+                           TfromBL = as.numeric((input$date2 - input$date1)/365.25), vnumber = input$vnumber)
       model <- readRDS("BOSTON.Rds")
       mm <- model.matrix(terms(model), newdat)
       newdat$test.fu <- y_prime <- predict(model, newdat, re.form = NA)
@@ -132,133 +143,155 @@ shinyServer(function(input, output) {
     if (input$Test == "MMSE") {
       newdat <- data.frame(MMSE.bl = input$T1Score, AGE.bl = input$BAge, 
                            EDUC = input$Edu, vnumber = 2, CAUC = factor(input$Race, levels = c("Caucasian", "NonCaucasian")), 
-                           SEX = factor(input$Sex, levels = c("Male", "Female")), MMSE = input$T2Score)
+                           SEX = factor(input$Sex, levels = c("Male", "Female")), MMSE = input$T2Score,
+                           TfromBL = as.numeric((input$date2 - input$date1)/365.25), vnumber = input$vnumber)
       model <- readRDS("MMSE.Rds")
       mm <- model.matrix(terms(model), newdat)
       #newdat$test.fu <- predict(model, newdat, re.form = NA)
       pvar1 <- diag(mm %*% tcrossprod(vcov(model),mm))
       tvar1 <- pvar1+summary(model)$sigma^2
       newdat$se <- se <- sqrt(tvar1)
+      if(input$IntType == "Confidence") se <- data.frame(VarCorr(model))$sdcor[4]
       return(se)
     }
     if (input$Test == "DSF") {
       newdat <- data.frame(DIGIF.bl = input$T1Score, AGE.bl = input$BAge, 
                            EDUC = input$Edu, vnumber = 2, CAUC = factor(input$Race, levels = c("Caucasian", "NonCaucasian")), 
-                           SEX = factor(input$Sex, levels = c("Male", "Female")), DIGIF = input$T2Score)
+                           SEX = factor(input$Sex, levels = c("Male", "Female")), DIGIF = input$T2Score,
+                           TfromBL = as.numeric((input$date2 - input$date1)/365.25), vnumber = input$vnumber)
       model <- readRDS("DIGIF.Rds")
       mm <- model.matrix(terms(model), newdat)
       #newdat$test.fu <- predict(model, newdat, re.form = NA)
       pvar1 <- diag(mm %*% tcrossprod(vcov(model),mm))
       tvar1 <- pvar1+summary(model)$sigma^2
       newdat$se <- se <- sqrt(tvar1)
+      if(input$IntType == "Confidence") se <- data.frame(VarCorr(model))$sdcor[4]
       return(se)
     }
     if (input$Test == "DSB") {
       newdat <- data.frame(DIGIB.bl = input$T1Score, AGE.bl = input$BAge, 
                            EDUC = input$Edu, vnumber = 2, CAUC = factor(input$Race, levels = c("Caucasian", "NonCaucasian")), 
-                           SEX = factor(input$Sex, levels = c("Male", "Female")), DIGIB = input$T2Score)
+                           SEX = factor(input$Sex, levels = c("Male", "Female")), DIGIB = input$T2Score,
+                           TfromBL = as.numeric((input$date2 - input$date1)/365.25), vnumber = input$vnumber)
       model <- readRDS("DIGIB.Rds")
       mm <- model.matrix(terms(model), newdat)
       #newdat$test.fu <- predict(model, newdat, re.form = NA)
       pvar1 <- diag(mm %*% tcrossprod(vcov(model),mm))
       tvar1 <- pvar1+summary(model)$sigma^2
       newdat$se <- se <- sqrt(tvar1)
+      if(input$IntType == "Confidence") se <- data.frame(VarCorr(model))$sdcor[4]
       return(se)
     }
     if (input$Test == "DSC") {
       newdat <- data.frame(WAIS.bl = input$T1Score, AGE.bl = input$BAge, 
                            EDUC = input$Edu, vnumber = 2, CAUC = factor(input$Race, levels = c("Caucasian", "NonCaucasian")), 
-                           SEX = factor(input$Sex, levels = c("Male", "Female")), WAIS = input$T2Score)
+                           SEX = factor(input$Sex, levels = c("Male", "Female")), WAIS = input$T2Score,
+                           TfromBL = as.numeric((input$date2 - input$date1)/365.25), vnumber = input$vnumber)
       model <- readRDS("WAIS.Rds")
       mm <- model.matrix(terms(model), newdat)
       #newdat$test.fu <- predict(model, newdat, re.form = NA)
       pvar1 <- diag(mm %*% tcrossprod(vcov(model),mm))
       tvar1 <- pvar1+summary(model)$sigma^2
       newdat$se <- se <- sqrt(tvar1)
+      if(input$IntType == "Confidence") se <- data.frame(VarCorr(model))$sdcor[4]
       return(se)
     }
     if (input$Test == "TMTA") {
       newdat <- data.frame(TRAILA.bl = input$T1Score, AGE.bl = input$BAge, 
                            EDUC = input$Edu, vnumber = 2, CAUC = factor(input$Race, levels = c("Caucasian", "NonCaucasian")), 
-                           SEX = factor(input$Sex, levels = c("Male", "Female")), TRAILA = input$T2Score)
+                           SEX = factor(input$Sex, levels = c("Male", "Female")), TRAILA = input$T2Score,
+                           TfromBL = as.numeric((input$date2 - input$date1)/365.25), vnumber = input$vnumber)
       model <- readRDS("TRAILA.Rds")
       mm <- model.matrix(terms(model), newdat)
       #newdat$test.fu <- predict(model, newdat, re.form = NA)
       pvar1 <- diag(mm %*% tcrossprod(vcov(model),mm))
       tvar1 <- pvar1+summary(model)$sigma^2
       newdat$se <- se <- sqrt(tvar1)
+      if(input$IntType == "Confidence") se <- data.frame(VarCorr(model))$sdcor[4]
       return(se)
     }
     if (input$Test == "TMTB") {
       newdat <- data.frame(TRAILB.bl = input$T1Score, AGE.bl = input$BAge, 
                            EDUC = input$Edu, vnumber = 2, CAUC = factor(input$Race, levels = c("Caucasian", "NonCaucasian")), 
-                           SEX = factor(input$Sex, levels = c("Male", "Female")), TRAILB = input$T2Score)
+                           SEX = factor(input$Sex, levels = c("Male", "Female")), TRAILB = input$T2Score,
+                           TfromBL = as.numeric((input$date2 - input$date1)/365.25), vnumber = input$vnumber)
       model <- readRDS("TRAILB.Rds")
       mm <- model.matrix(terms(model), newdat)
       #newdat$test.fu <- predict(model, newdat, re.form = NA)
       pvar1 <- diag(mm %*% tcrossprod(vcov(model),mm))
       tvar1 <- pvar1+summary(model)$sigma^2
       newdat$se <- se <- sqrt(tvar1)
+      if(input$IntType == "Confidence") se <- data.frame(VarCorr(model))$sdcor[4]
       return(se)
     }
     if (input$Test == "LMI") {
       newdat <- data.frame(LOGIMEM.bl = input$T1Score, AGE.bl = input$BAge, 
                            EDUC = input$Edu, vnumber = 2, CAUC = factor(input$Race, levels = c("Caucasian", "NonCaucasian")), 
-                           SEX = factor(input$Sex, levels = c("Male", "Female")), LOGIMEM = input$T2Score)
+                           SEX = factor(input$Sex, levels = c("Male", "Female")), LOGIMEM = input$T2Score,
+                           TfromBL = as.numeric((input$date2 - input$date1)/365.25), vnumber = input$vnumber)
       model <- readRDS("LOGIMEM.Rds")
       mm <- model.matrix(terms(model), newdat)
       #newdat$test.fu <- predict(model, newdat, re.form = NA)
       pvar1 <- diag(mm %*% tcrossprod(vcov(model),mm))
       tvar1 <- pvar1+summary(model)$sigma^2
       newdat$se <- se <- sqrt(tvar1)
+      if(input$IntType == "Confidence") se <- data.frame(VarCorr(model))$sdcor[4]
       return(se)
     }
     if (input$Test == "LMD") {
       newdat <- data.frame(MEMUNITS.bl = input$T1Score, AGE.bl = input$BAge, 
                            EDUC = input$Edu, vnumber = 2, CAUC = factor(input$Race, levels = c("Caucasian", "NonCaucasian")), 
-                           SEX = factor(input$Sex, levels = c("Male", "Female")), MEMUNITS = input$T2Score)
+                           SEX = factor(input$Sex, levels = c("Male", "Female")), MEMUNITS = input$T2Score,
+                           TfromBL = as.numeric((input$date2 - input$date1)/365.25), vnumber = input$vnumber)
       model <- readRDS("MEMUNITS.Rds")
       mm <- model.matrix(terms(model), newdat)
       #newdat$test.fu <- predict(model, newdat, re.form = NA)
       pvar1 <- diag(mm %*% tcrossprod(vcov(model),mm))
       tvar1 <- pvar1+summary(model)$sigma^2
       newdat$se <- se <- sqrt(tvar1)
+      if(input$IntType == "Confidence") se <- data.frame(VarCorr(model))$sdcor[4]
       return(se)
     }
     if (input$Test == "Animals") {
       newdat <- data.frame(ANIMALS.bl = input$T1Score, AGE.bl = input$BAge, 
                            EDUC = input$Edu, vnumber = 2, CAUC = factor(input$Race, levels = c("Caucasian", "NonCaucasian")), 
-                           SEX = factor(input$Sex, levels = c("Male", "Female")), ANIMALS = input$T2Score)
+                           SEX = factor(input$Sex, levels = c("Male", "Female")), ANIMALS = input$T2Score,
+                           TfromBL = as.numeric((input$date2 - input$date1)/365.25), vnumber = input$vnumber)
       model <- readRDS("ANIMALS.Rds")
       mm <- model.matrix(terms(model), newdat)
       #newdat$test.fu <- predict(model, newdat, re.form = NA)
       pvar1 <- diag(mm %*% tcrossprod(vcov(model),mm))
       tvar1 <- pvar1+summary(model)$sigma^2
       newdat$se <- se <- sqrt(tvar1)
+      if(input$IntType == "Confidence") se <- data.frame(VarCorr(model))$sdcor[4]
       return(se)
     }
     if (input$Test == "Vegetables") {
       newdat <- data.frame(VEG.bl = input$T1Score, AGE.bl = input$BAge, 
                            EDUC = input$Edu, vnumber = 2, CAUC = factor(input$Race, levels = c("Caucasian", "NonCaucasian")), 
-                           SEX = factor(input$Sex, levels = c("Male", "Female")), VEG = input$T2Score)
+                           SEX = factor(input$Sex, levels = c("Male", "Female")), VEG = input$T2Score,
+                           TfromBL = as.numeric((input$date2 - input$date1)/365.25), vnumber = input$vnumber)
       model <- readRDS("VEG.Rds")
       mm <- model.matrix(terms(model), newdat)
       #newdat$test.fu <- predict(model, newdat, re.form = NA)
       pvar1 <- diag(mm %*% tcrossprod(vcov(model),mm))
       tvar1 <- pvar1+summary(model)$sigma^2
       newdat$se <- se <- sqrt(tvar1)
+      if(input$IntType == "Confidence") se <- data.frame(VarCorr(model))$sdcor[4]
       return(se)
     }
     if (input$Test == "BNT") {
       newdat <- data.frame(BOSTON.bl = input$T1Score, AGE.bl = input$BAge, 
                            EDUC = input$Edu, vnumber = 2, CAUC = factor(input$Race, levels = c("Caucasian", "NonCaucasian")), 
-                           SEX = factor(input$Sex, levels = c("Male", "Female")), BOSTON = input$T2Score)
+                           SEX = factor(input$Sex, levels = c("Male", "Female")), BOSTON = input$T2Score,
+                           TfromBL = as.numeric((input$date2 - input$date1)/365.25), vnumber = input$vnumber)
       model <- readRDS("BOSTON.Rds")
       mm <- model.matrix(terms(model), newdat)
       #newdat$test.fu <- predict(model, newdat, re.form = NA)
       pvar1 <- diag(mm %*% tcrossprod(vcov(model),mm))
       tvar1 <- pvar1+summary(model)$sigma^2
       newdat$se <- se <- sqrt(tvar1)
+      if(input$IntType == "Confidence") se <- data.frame(VarCorr(model))$sdcor[4]
       return(se)
     }
   })
@@ -531,13 +564,21 @@ shinyServer(function(input, output) {
   })
   
   
-  output$PT2S <- renderText(paste0("Predicted Time 2 Score: ", round(Yprime(),2)))
-  output$SEP <- renderText(paste0("Standard Error of the Prediction: ", round(SEP(),2)))
-  output$LowerCI <- renderText({paste0("Lower Limit of ", as.numeric(input$PI), "% Prediction Interval: ", round(Yprime()-SEP()*qnorm(as.numeric(input$PI)/100),2))})
-  output$UpperCI <- renderText({paste0("Upper Limit of ", as.numeric(input$PI), "% Prediction Interval: ", round(Yprime()+SEP()*qnorm(as.numeric(input$PI)/100),2))})
-  output$zscore <- renderText(paste0("z-score: ", 
-                                     round(((input$T2Score-Yprime())/SEP()),2)
-                                     ))
+  output$PT2S <- renderText({paste0("Predicted Time 2 Score: ", round(Yprime(),2))})
+  output$SEP <- renderText({
+    ifelse(input$IntType == "Prediction", paste0("Standard Error of the Prediction: ", round(SEP(),2)),
+           paste0("Standard Error of the Estimate: ", round(SEP(),2)))})
+  output$LowerCI <- renderText({
+    ifelse(input$IntType == "Prediction", paste0("Lower Limit of ", as.numeric(input$PI), "% Prediction Interval: ", round(Yprime()-SEP()*qnorm(as.numeric(input$PI)/100),2)),
+           paste0("Lower Limit of ", as.numeric(input$PI), "% Confidence Interval: ", round(Yprime()-SEP()*qnorm(as.numeric(input$PI)/100),2)))})
+  output$UpperCI <- renderText({
+    ifelse(input$IntType == "Prediction", paste0("Upper Limit of ", as.numeric(input$PI), "% Prediction Interval: ", round(Yprime()+SEP()*qnorm(as.numeric(input$PI)/100),2)),
+           paste0("Upper Limit of ", as.numeric(input$PI), "% Confidence Interval: ", round(Yprime()+SEP()*qnorm(as.numeric(input$PI)/100),2)))})
+  output$zscore <- renderText({
+    if (input$Test == "TMTA" | input$Test == "TMTB") {
+      paste0("z-score: ", round(((Yprime()-input$T2Score)/SEP()),2))
+    } else paste0("z-score: ", round(((input$T2Score-Yprime())/SEP()),2))
+    })
   x <- reactive({
     if((input$T2Score - input$T1Score) < min(FreqPlot()$change)) min(FreqPlot()$change)
     if((input$T2Score - input$T1Score) > max(FreqPlot()$change)) max(FreqPlot()$change) else (input$T2Score - input$T1Score)

@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 # 
-# Copyright (c) 2014 Brandon Gavett
+# Copyright (c) 2015 Brandon Gavett
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -45,8 +45,13 @@ tags$hr(),
                                     "Animal Fluency" = "Animals",
                                     "Vegetable Fluency" = "Vegetables",
                                     "Boston Naming Test (30 odd items)" = "BNT"),multiple=FALSE),
+           dateInput("date1", "Baseline Test Date:", value = Sys.Date() - 365, format = "mm-dd-yyyy", 
+                     startview = "year"),
            numericInput("T1Score", "Baseline Test Score:",29,min=0,max=300, step = 1),
+           dateInput("date2", "Follow-up Test Date:", value = Sys.Date(), format = "mm-dd-yyyy", 
+                     startview = "year"),
            numericInput("T2Score", "Follow-up Test Score:", 25 , min = 0, max = 300, step = 1),
+           numericInput("vnumber", "Visit Number", 2, min = 2, max = 7, step = 1),
            numericInput("BAge", "Age at Baseline (years):",73, min = 50, max = 100, step = .01),
            numericInput("Edu", "Education (years):",16, min = 3, max = 25, step = 1),
            selectInput("Race", "Race:",
@@ -55,12 +60,13 @@ tags$hr(),
            selectInput("Sex", "Sex:",
                        choices = list("Male" = "Male",
                                       "Female" = "Female"), multiple = FALSE),
-           numericInput("PI", "Prediction Interval (%):", 95, min = 50, max = 99, step = 1),
+           radioButtons("IntType", "Interval Type", choices = c("Confidence", "Prediction"), inline = T),
+           numericInput("PI", "Interval (%):", 90, min = 50, max = 99, step = 1),
            submitButton("Submit")),
     
     column(8,
            h4("Predicted Score at One-Year Follow-Up"),
-           h5('Follow-up test scores outside the prediction interval indicate "reliable" change.'),
+           h5('Follow-up test scores outside the interval indicate "reliable" change.'),
            br(),
            textOutput("PT2S"),
            textOutput("SEP"),
